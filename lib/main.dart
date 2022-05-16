@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_mid/responsive/responsive_layout_sreen.dart';
 import 'package:instagram_mid/screens/login_screen.dart';
+import 'package:instagram_mid/screens/signup_screen.dart';
 import 'package:instagram_mid/utils/colors.dart';
 import 'package:instagram_mid/responsive/mobile_screen_layout.dart';
 
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
       ),
       // home: const ReponsiveLayout(
       //   mobileScreenLayout: MobileScreenLayout(),
-      home: LoginScreen(),
+      home: SignupScreen(),
     );
   }
 }
