@@ -1,6 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:image_picker/image_picker.dart';
+import 'package:instagram_mid/resources/auth_methods.dart';
+import 'package:instagram_mid/utils/utils.dart';
 import '../utils/colors.dart';
 import '../widgets/text_field_input.dart';
 
@@ -16,6 +20,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _passController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
+  Uint8List? _image;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -25,6 +31,33 @@ class _SignupScreenState extends State<SignupScreen> {
     _passController.dispose();
     _bioController.dispose();
     _usernameController.dispose();
+  }
+
+  void selectImage() async {
+    Uint8List im = await pickImage(ImageSource.gallery);
+    setState(() {
+      _image = im;
+    });
+  }
+
+  void signUpUser() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String res = await AuthMethods().signUpUser(
+        email: _emailController.text,
+        password: _passController.text,
+        username: _usernameController.text,
+        bio: _bioController.text,
+        file: _image!);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (res == 'success') {
+      showSnackBar(res, context);
+    }
   }
 
   @override
@@ -47,11 +80,23 @@ class _SignupScreenState extends State<SignupScreen> {
               const SizedBox(height: 64),
               //cicular wiget to accept and show our selected file
               Stack(children: [
-                CircleAvatar(
-                  radius: 64,
-                  backgroundImage: NetworkImage(
-                      'https://images.viblo.asia/70x70/503c10b5-6729-4d7c-9354-86de1f49dc1d.jpg'),
-                )
+                _image != null
+                    ? CircleAvatar(
+                        radius: 64,
+                        backgroundImage: MemoryImage(_image!),
+                      )
+                    : const CircleAvatar(
+                        radius: 64,
+                        backgroundImage: NetworkImage(
+                            'https://minervastrategies.com/wp-content/uploads/2016/03/default-avatar.jpg')),
+                Positioned(
+                    bottom: -10,
+                    left: 80,
+                    child: IconButton(
+                        onPressed: selectImage,
+                        icon: const Icon(
+                          Icons.add_a_photo,
+                        )))
               ]),
               const SizedBox(height: 24),
               //text input username
@@ -85,17 +130,23 @@ class _SignupScreenState extends State<SignupScreen> {
               const SizedBox(height: 24),
               //button login
               InkWell(
+                  onTap: signUpUser,
                   child: Container(
-                child: const Text('Log in'),
-                width: double.infinity,
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: const ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
-                    ),
-                    color: Colors.blue),
-              )),
+                    child: _isLoading
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                            color: primaryColor,
+                          ))
+                        : const Text('Sign Up'),
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: const ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(4)),
+                        ),
+                        color: Colors.blue),
+                  )),
               const SizedBox(height: 12),
               Flexible(child: Container(), flex: 2),
               //trans to register
