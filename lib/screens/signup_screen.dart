@@ -1,9 +1,11 @@
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_mid/resources/auth_methods.dart';
+import 'package:instagram_mid/responsive/mobile_screen_layout.dart';
+import 'package:instagram_mid/responsive/responsive_layout_sreen.dart';
+import 'package:instagram_mid/screens/login_screen.dart';
 import 'package:instagram_mid/utils/utils.dart';
 import '../utils/colors.dart';
 import '../widgets/text_field_input.dart';
@@ -25,7 +27,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _emailController.dispose();
     _passController.dispose();
@@ -56,8 +57,17 @@ class _SignupScreenState extends State<SignupScreen> {
     });
 
     if (res == 'success') {
-      showSnackBar(res, context);
+      showSnackBar(context, res);
+    } else {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) =>
+              const ReponsiveLayout(mobileScreenLayout: MobileScreenLayout())));
     }
+  }
+
+  void navigateToLogin() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
 
   @override
@@ -154,13 +164,13 @@ class _SignupScreenState extends State<SignupScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    child: Text("Don't have an Account? "),
+                    child: Text("Do you have an Account? "),
                     padding: const EdgeInsets.symmetric(vertical: 8),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: navigateToLogin,
                     child: Container(
-                      child: const Text("Sign up.",
+                      child: const Text("Login.",
                           style: TextStyle(fontWeight: FontWeight.bold)),
                       padding: const EdgeInsets.symmetric(vertical: 8),
                     ),

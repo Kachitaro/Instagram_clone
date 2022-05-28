@@ -1,10 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagram_mid/resources/auth_methods.dart';
+import 'package:instagram_mid/responsive/mobile_screen_layout.dart';
+import 'package:instagram_mid/responsive/responsive_layout_sreen.dart';
+import 'package:instagram_mid/screens/signup_screen.dart';
 import 'package:instagram_mid/utils/colors.dart';
+import 'package:instagram_mid/utils/global_variable.dart';
 import 'package:instagram_mid/utils/utils.dart';
 import 'package:instagram_mid/widgets/text_field_input.dart';
 
@@ -36,14 +37,24 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailController.text, password: _passController.text);
 
     if (res == "Success") {
-      //
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) =>
+              const ReponsiveLayout(mobileScreenLayout: MobileScreenLayout())));
     } else {
-      //
-      showSnackBar(res, context);
+      // {
+      setState(() {
+        _isLoading = false;
+      });
+      showSnackBar(context, res);
     }
     setState(() {
       _isLoading = false;
     });
+  }
+
+  void navigateToSignUp() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const SignupScreen()));
   }
 
   @override
@@ -109,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: navigateToSignUp,
                     child: Container(
                       child: const Text("Sign up.",
                           style: TextStyle(fontWeight: FontWeight.bold)),
